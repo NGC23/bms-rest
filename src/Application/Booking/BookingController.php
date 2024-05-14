@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Bms\Application\Booking;
 
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -15,6 +16,8 @@ class BookingController
 
     public function get(ServerRequestInterface $request): ResponseInterface
     {
-        die("asdasdasdasddas");
+        return new JsonResponse([
+            'message' => 'welcome to the bms rest - this is a test'
+        ]);
     }
 }
