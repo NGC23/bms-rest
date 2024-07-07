@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: 'BMS rest API'
+  description: 'Booking management system api'
+  version: 1.0.0
+paths:
+  /events:
+    get:
+      tags:
+        - Events
+      operationId: 07dc8c61384715f53bfdc427cb15f57b
+      responses:
+        '500':
+          description: 'Internal server error'
+        '200':
+          description: 'Event object'
+  '/events/:id':
+    get:
+      tags:
+        - Events
+      operationId: fb3175543029330cd1a753a92d68aa81
+      responses:
+        '500':
+          description: 'Internal server error'
+        '200':
+          description: 'Event object'
+  /events/create:
+    post:
+      tags:
+        - Events
+      operationId: b6704fbbdd98cb2242a27b0193463b79
+      responses:
+        '500':
+          description: 'Internal server error'
+        '201':
+          description: 'Event object'
+  /events/update:
+    patch:
+      tags:
+        - Events
+      operationId: 9058872170396845cb0dea9df30157f1
+      responses:
+        '500':
+          description: 'Internal server error'
+        '200':
+          description: 'Event object'
+  '/events/:userId/:id':
+    delete:
+      tags:
+        - Events
+      operationId: 446b05e78064d948643380785d0d8a1f
+      responses:
+        '500':
+          description: 'Internal server error'
+        '200':
+          description: 'Event object'
