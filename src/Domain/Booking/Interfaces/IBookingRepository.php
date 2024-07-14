@@ -12,27 +12,35 @@ interface IBookingRepository
      * get Booking function
      *
      * @param int $userId
-     * @param int $eventId
      * @return Booking[]
      */
-    public function getAll(
-        int $userId,
-        int $eventId,
-    ): array;
+    public function getAll(int $userId): array;
 
     /**
-     * get Booking by id
+     * get booking by id
      *
-     * @param int $userId
-     * @param int $eventId
+     * @param integer $userId
+     * @param integer $eventId
      * @param integer $id
      * @return Booking
      */
     public function getById(
         int $userId,
         int $eventId,
-        int $id,
+        int $id
     ): Booking;
+
+    /**
+     * get Booking by id
+     *
+     * @param int $userId
+     * @param int $eventId
+     * @return Booking[]
+     */
+    public function getAllByEventId(
+        int $userId,
+        int $eventId,
+    ): array;
 
     /**
      * create Booking function

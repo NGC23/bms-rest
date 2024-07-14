@@ -10,6 +10,9 @@ use DateTimeImmutable;
 use App\Domain\Booking\Model\Booking;
 use App\Domain\General\Interfaces\IConnectionFactory;
 use App\Domain\Booking\Interfaces\IBookingRepository;
+use App\Domain\Booking\Model\BookerDetails;
+use Exception;
+use Throwable;
 
 class BookingRepository implements IBookingRepository
 {
@@ -17,30 +20,37 @@ class BookingRepository implements IBookingRepository
     {
     }
 
-    /**
+        /**
      * @inheritDoc
      */
-    public function getAll(int $userId, int $eventId): array
+    public function getAll(int $userId): array
     {
         try {
             $pstmt = ($this->connection->create())->prepare(
                 'SELECT 
-                    id, 
-                    event_id,
-                    user_id,
-                    start_at,
-                    end_at,
+                    bookings.id, 
+                    bookings.event_id,
+                    bookings.user_id,
+                    bookings.start_at,
+                    bookings.end_at,
+                    booking_details.id AS details_id,
+                    booking_details.first_name,
+                    booking_details.last_name,
+                    booking_details.email,
+                    booking_details.cell_number,
+                    booking_details.created_at
                 FROM 
-                    `bookings` 
+                    `bookings`
+                LEFT JOIN 
+                    `booking_details`
+                ON
+                    booking_details.booking_id = bookings.id 
                 WHERE 
-                    user_id=:userId
-                AND
-                    event_id=:eventId'
+                    bookings.user_id = :userId'
             );
             $pstmt->execute(
                 [
-                    ':userId' => $userId,
-                    ':eventId' => $eventId
+                    ':userId' => $userId
                 ]
             );
             $bookings = $pstmt->fetchAll(PDO::FETCH_ASSOC);
@@ -56,6 +66,73 @@ class BookingRepository implements IBookingRepository
                 (int) $booking['user_id'],
                 (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
                 (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
+                new BookerDetails(
+                    $booking['first_name'],
+                    $booking['last_name'],
+                    $booking['cell_number'],
+                    $booking['email'],
+                    (new DateTimeImmutable())->setTimestamp((int) $booking['created_at']),
+                    (int) $booking['id'],
+                    (int) $booking['details_id'],
+                ),
+                (int) $booking['id']
+            );
+        }, $bookings);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllByEventId(
+        int $userId,
+        int $eventId
+    ): array {
+        try {
+            $pstmt = ($this->connection->create())->prepare(
+                'SELECT 
+                    bookings.id, 
+                    bookings.event_id,
+                    bookings.user_id,
+                    bookings.start_at,
+                    bookings.end_at,
+                    booking_details.first_name,
+                    booking_details.last_name,
+                    booking_details.email,
+                    booking_details.cell_number,
+                    booking_details.created_at,
+                FROM 
+                    `bookings`
+                LEFT JOIN 
+                    `booking_details`
+                ON
+                    booking_details.booking_id = bookings.id 
+                WHERE 
+                    bookings.user_id=:userId
+                AND 
+                    bookings.event_id=:eventId'
+            );
+
+            $pstmt->execute(
+                [
+                    ':userId' => $userId,
+                    ':eventId' => $eventId
+                ]
+            );
+
+            $bookings = $pstmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            //log and throw domain exception that we are not coupled to the PDO exceptions.
+            //Catch in presentation layer and return approapriate status
+            throw $e;
+        }
+
+        return array_map(function (array $booking) {
+            return new Booking(
+                (int) $booking['event_id'],
+                (int) $booking['user_id'],
+                (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
+                (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
+                null,
                 (int) $booking['id']
             );
         }, $bookings);
@@ -72,19 +149,28 @@ class BookingRepository implements IBookingRepository
         try {
             $pstmt = ($this->connection->create())->prepare(
                 'SELECT 
-                    id, 
-                    event_id,
-                    user_id,
-                    start_at,
-                    end_at,
+                    bookings.id, 
+                    bookings.event_id,
+                    bookings.user_id,
+                    bookings.start_at,
+                    bookings.end_at,
+                    booking_details.first_name,
+                    booking_details.last_name,
+                    booking_details.email,
+                    booking_details.cell_number,
+                    booking_details.created_at,
                 FROM 
-                    `bookings` 
+                    `bookings`
+                LEFT JOIN 
+                    `booking_details`
+                ON
+                    booking_details.booking_id = bookings.id 
                 WHERE 
-                    id=:id
+                    bookings.user_id=:userId
                 AND 
-                    user_id=:userId
+                    bookings.event_id=:eventId
                 AND 
-                    event_id=:eventId'
+                     bookings.id=:id'
             );
 
             $pstmt->execute(
@@ -95,21 +181,26 @@ class BookingRepository implements IBookingRepository
                 ]
             );
 
-            $booking = $pstmt->fetchAll(PDO::FETCH_ASSOC);
+            $booking = $pstmt->fetch(PDO::FETCH_ASSOC);
+
         } catch (PDOException $e) {
             //log and throw domain exception that we are not coupled to the PDO exceptions.
             //Catch in presentation layer and return approapriate status
             throw $e;
+        } catch (Throwable $e) {
+            throw $e;
         }
 
         return new Booking(
-            (int) $booking[0]['event_id'],
-            (int) $booking[0]['user_id'],
-            (new DateTimeImmutable())->setTimestamp((int) $booking[0]['start_at']),
-            (new DateTimeImmutable())->setTimestamp((int) $booking[0]['end_at']),
-            (int) $booking[0]['id']
+            (int) $booking['event_id'],
+            (int) $booking['user_id'],
+            (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
+            (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
+            null,
+            (int) $booking['id']
         );
     }
+
 
     /**
      * @inheritDoc
@@ -117,22 +208,21 @@ class BookingRepository implements IBookingRepository
     public function create(Booking $booking): Booking
     {
         try {
-            $pstmt = ($this->connection->create())->prepare(
+            $conn = $this->connection->create();
+            $pstmt = $conn->prepare(
                 'INSERT INTO `bookings` 
                     VALUES(
                         NULL,
-                        id, 
-                        event_id,
-                        user_id,
-                        start_at,
-                        end_at,
+                        :event_id,
+                        :user_id,
+                        :start_at,
+                        :end_at
                     )
                 '
             );
 
             $pstmt->execute(
                 [
-                    ':id' => $booking->getId(),
                     ':event_id' => $booking->getEventId(),
                     ':user_id' => $booking->getUserId(),
                     ':start_at' => $booking->getStartTime()->getTimestamp(),
@@ -146,7 +236,7 @@ class BookingRepository implements IBookingRepository
             throw $e;
         }
 
-        return $booking->withId((int) ($this->connection->create())->lastInsertId());
+        return $booking->withId((int) $conn->lastInsertId());
     }
 
     /**

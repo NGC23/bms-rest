@@ -10,7 +10,9 @@ $dotenv->load();
 
 $container = new Container();
 
-$container->add(\App\Application\Booking\BookingController::class);
+$container->add(\App\Application\Booking\BookingController::class)
+    ->addArgument(App\Domain\Booking\Interfaces\IBookingRepository::class)
+    ->addArgument(App\Domain\Booking\Interfaces\IBookingDetailsRepository::class);
 
 $container->add(App\Application\Events\EventController::class)
     ->addArgument(App\Domain\Events\Interfaces\IEventRepository::class);
@@ -29,6 +31,17 @@ $container->add(
 $container->add(
     App\Domain\User\Interfaces\IUserRepository::class,
     App\Infrastructure\User\Repository\UserRepository::class
+)->addArgument(App\Domain\General\Interfaces\IConnectionFactory::class);
+
+//fix plural and singular in naming, bloody idiot!!!
+$container->add(
+    App\Domain\Booking\Interfaces\IBookingRepository::class,
+    App\Infrastructure\Bookings\Repository\BookingRepository::class
+)->addArgument(App\Domain\General\Interfaces\IConnectionFactory::class);
+
+$container->add(
+    App\Domain\Booking\Interfaces\IBookingDetailsRepository::class,
+    App\Infrastructure\Bookings\Repository\BookingDetailsRepository::class
 )->addArgument(App\Domain\General\Interfaces\IConnectionFactory::class);
 
 $container->add(

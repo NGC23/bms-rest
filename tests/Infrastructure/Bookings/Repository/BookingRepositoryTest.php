@@ -39,7 +39,7 @@ class BookingRepositoryTest extends TestCase
 
         $repository = new BookingRepository($this->connection);
         //action
-        $repository->getAll(1, 1);
+        $repository->getAll(1);
     }
 
     public function testGetAll(): void
@@ -60,7 +60,7 @@ class BookingRepositoryTest extends TestCase
         $this->connection->method('create')->willReturn($pdo);
 
         $repository = new BookingRepository($this->connection);
-        $result = $repository->getAll(1, 1);
+        $result = $repository->getAll(1);
 
         $this->assertCount(3, $result);
         $this->assertInstanceOf(Booking::class, $result[0]);
@@ -75,6 +75,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             1
         );
 
@@ -92,6 +93,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             1
         );
 
@@ -118,6 +120,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             1
         );
 
@@ -138,6 +141,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             1
         );
 
@@ -163,7 +167,8 @@ class BookingRepositoryTest extends TestCase
             1,
             1,
             new DateTimeImmutable(),
-            new DateTimeImmutable()
+            new DateTimeImmutable(),
+            null
         );
 
         $this->connection->method('create')->willThrowException(new PDOException());
@@ -179,7 +184,8 @@ class BookingRepositoryTest extends TestCase
             1,
             1,
             new DateTimeImmutable(),
-            new DateTimeImmutable()
+            new DateTimeImmutable(),
+            null
         );
 
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -211,7 +217,7 @@ class BookingRepositoryTest extends TestCase
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $statementMock = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $statementMock->method('execute')->willReturn(true);
-        $statementMock->method('fetchAll')->willReturn([$booking]);
+        $statementMock->method('fetch')->willReturn($booking);
         $pdo->method('prepare')->willReturn($statementMock);
 
         $this->connection->method('create')->willReturn($pdo);

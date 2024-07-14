@@ -41,11 +41,16 @@ $router->map(
 );
 //BOOKINGS
 $router->map(
-    'GET',
-    '/bookings',
-    'App\Application\Booking\BookingController::get'
+    'POST',
+    '/bookings/create',
+    'App\Application\Booking\BookingController::create'
 );
 
+$router->map(
+    'GET',
+    '/bookings/{userId}',
+    'App\Application\Booking\BookingController::getAll'
+);
 //EVENTS
 $router->map(
     'POST',

@@ -13,7 +13,8 @@ class Booking
         private int $userId,
         private DateTimeImmutable $startAt,
         private DateTimeImmutable $endAt,
-        private ?int $id = null
+        private ?BookerDetails $bookerDetails,
+        private ?int $id = null,
     ) {
     }
 
@@ -54,10 +55,23 @@ class Booking
         return $this->endAt;
     }
 
+    public function getBookerDetails(): ?BookerDetails
+    {
+        return $this->bookerDetails;
+    }
+
     public function withId(int $id): self
     {
         $booking = clone $this;
         $booking->id = $id;
+
+        return $booking;
+    }
+
+    public function withBookerDetails(BookerDetails $bookerDetails): self
+    {
+        $booking = clone $this;
+        $booking->bookerDetails = $bookerDetails;
 
         return $booking;
     }
@@ -69,7 +83,8 @@ class Booking
             'eventId' => $this->getEventId(),
             'startTime' => $this->getStartTime()->format('Y-m-d H:s:i'),
             'endTime' =>  $this->getEndTime()->format('Y-m-d H:s:i'),
-            'userId' => $this->getUserId()
+            'userId' => $this->getUserId(),
+            'bookerDetails' => $this->getBookerDetails()->toArray(),
         ];
     }
 }
