@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+print_r($_SERVER);
+print_r($_ENV);
+
 error_reporting(E_ALL);
 
 use Dotenv\Dotenv;
@@ -57,11 +60,11 @@ $container->add(
     App\Domain\General\Factory\PDOConnectionFactory::class
 )->addArgument(
         new App\Domain\General\Models\Connection(
-            $MYSQL_HOST,
-            $MYSQL_PORT,
-            $MYSQL_DATABASE,
-            $MYSQL_USER,
-            $MYSQL_ROOT_PASSWORD
+            $_ENV['MYSQL_HOST'],
+            $_ENV['MYSQL_PORT'],
+            $_ENV['MYSQL_DATABASE'],
+            $_ENV['MYSQL_USER'],
+            $_ENV['MYSQL_ROOT_PASSWORD']
         )
     );
 
