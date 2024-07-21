@@ -11,7 +11,6 @@ use App\Domain\Booking\Model\Booking;
 use App\Domain\General\Interfaces\IConnectionFactory;
 use App\Domain\Booking\Interfaces\IBookingRepository;
 use App\Domain\Booking\Model\BookerDetails;
-use Exception;
 use Throwable;
 
 class BookingRepository implements IBookingRepository
@@ -33,6 +32,7 @@ class BookingRepository implements IBookingRepository
                     bookings.user_id,
                     bookings.start_at,
                     bookings.end_at,
+                    events.name AS event_name,
                     booking_details.id AS details_id,
                     booking_details.first_name,
                     booking_details.last_name,
@@ -44,7 +44,11 @@ class BookingRepository implements IBookingRepository
                 LEFT JOIN 
                     `booking_details`
                 ON
-                    booking_details.booking_id = bookings.id 
+                    booking_details.booking_id = bookings.id
+                LEFT JOIN
+                    events
+                ON
+                    events.id = bookings.event_id 
                 WHERE 
                     bookings.user_id = :userId'
             );
@@ -75,6 +79,7 @@ class BookingRepository implements IBookingRepository
                     (int) $booking['id'],
                     (int) $booking['details_id'],
                 ),
+                $booking['event_name'],
                 (int) $booking['id']
             );
         }, $bookings);
@@ -95,6 +100,8 @@ class BookingRepository implements IBookingRepository
                     bookings.user_id,
                     bookings.start_at,
                     bookings.end_at,
+                    events.name AS event_name,
+                    booking_details.id AS details_id,
                     booking_details.first_name,
                     booking_details.last_name,
                     booking_details.email,
@@ -105,7 +112,11 @@ class BookingRepository implements IBookingRepository
                 LEFT JOIN 
                     `booking_details`
                 ON
-                    booking_details.booking_id = bookings.id 
+                    booking_details.booking_id = bookings.id
+                LEFT JOIN
+                    events
+                ON
+                    events.id = bookings.event_id  
                 WHERE 
                     bookings.user_id=:userId
                 AND 
@@ -133,6 +144,7 @@ class BookingRepository implements IBookingRepository
                 (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
                 (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
                 null,
+                $booking['event_name'],
                 (int) $booking['id']
             );
         }, $bookings);
@@ -141,11 +153,7 @@ class BookingRepository implements IBookingRepository
     /**
      * @inheritDoc
      */
-    public function getById(
-        int $userId,
-        int $eventId,
-        int $id
-    ): Booking {
+    public function getById(int $id): Booking {
         try {
             $pstmt = ($this->connection->create())->prepare(
                 'SELECT 
@@ -154,31 +162,29 @@ class BookingRepository implements IBookingRepository
                     bookings.user_id,
                     bookings.start_at,
                     bookings.end_at,
+                    events.name AS event_name,
+                    booking_details.id AS details_id,
                     booking_details.first_name,
                     booking_details.last_name,
                     booking_details.email,
                     booking_details.cell_number,
-                    booking_details.created_at,
+                    booking_details.created_at
                 FROM 
                     `bookings`
                 LEFT JOIN 
                     `booking_details`
                 ON
-                    booking_details.booking_id = bookings.id 
+                    booking_details.booking_id = bookings.id
+                LEFT JOIN
+                    events
+                ON
+                    events.id = bookings.event_id   
                 WHERE 
-                    bookings.user_id=:userId
-                AND 
-                    bookings.event_id=:eventId
-                AND 
                      bookings.id=:id'
             );
 
             $pstmt->execute(
-                [
-                    ':userId' => $userId,
-                    ':eventId' => $eventId,
-                    ':id' => $id,
-                ]
+                [':id' => $id]
             );
 
             $booking = $pstmt->fetch(PDO::FETCH_ASSOC);
@@ -196,7 +202,16 @@ class BookingRepository implements IBookingRepository
             (int) $booking['user_id'],
             (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
             (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
-            null,
+            new BookerDetails(
+                $booking['first_name'],
+                $booking['last_name'],
+                $booking['cell_number'],
+                $booking['email'],
+                (new DateTimeImmutable())->setTimestamp((int) $booking['created_at']),
+                (int) $booking['id'],
+                (int) $booking['details_id'],
+            ),
+            $booking['event_name'],
             (int) $booking['id']
         );
     }

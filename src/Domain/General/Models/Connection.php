@@ -7,7 +7,9 @@ namespace App\Domain\General\Models;
 class Connection
 {
     public function __construct(
-        private string $dsn,
+        private string $host,
+        private string $port,
+        private string $database,
         private string $username,
         private string $password
     ) {
@@ -18,7 +20,7 @@ class Connection
      */
     public function getDsn(): string
     {
-        return $this->dsn;
+        return "mysql:host=$this->host;port=$this->port;dbname=$this->database";
     }
 
     /**

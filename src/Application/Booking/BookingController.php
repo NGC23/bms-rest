@@ -12,27 +12,39 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Domain\Booking\Interfaces\IBookingRepository;
 use App\Domain\Booking\Model\BookerDetails;
+use App\Domain\Events\Interfaces\IEventRepository;
 use DateTimeImmutable;
 use Throwable;
-use TypeError;
 
 class BookingController
 {
     public function __construct(
         private IBookingRepository $iBookingRepository,
-        private IBookingDetailsRepository $iBookingDetailsRepository
+        private IBookingDetailsRepository $iBookingDetailsRepository,
+        private IEventRepository $iEventRepository
     ) {
     }
 
-    public function get(ServerRequestInterface $request): ResponseInterface
+    public function getById(ServerRequestInterface $request): ResponseInterface
     {
-        return new JsonResponse([]);
+        $bookingId = (int) $request->getAttribute('bookingId');
+
+        try {
+            $booking = $this->iBookingRepository->getById((int) $bookingId);
+        } catch (Throwable $exception) {
+            return new JsonResponse(
+                [$exception->getMessage()], // need to think of how to construct global json, can be enforced in response factory...
+                500
+            );
+        }
+
+        return new JsonResponse($booking->toArray());
     }
 
     public function getAll(ServerRequestInterface $request): ResponseInterface
     {
         $userId = (int) $request->getAttribute('userId');
-        
+
         try {
             $bookings = $this->iBookingRepository->getAll($userId);
         } catch (Throwable $exception) {

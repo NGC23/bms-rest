@@ -18,4 +18,4 @@ run:
 	@docker run  --network jeeves -p 8080:80 -d -v .:/var/www/html --name bms-rest bms-rest
 	@echo "Rest api running on port 8080..."
 	@echo Starting mysql
-	@docker run  --network jeeves --name jeeves-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=gymmer4Life2024# -e XDEBUG_MODE=coverage -d mysql:8.0
+	@docker run  --network jeeves --name jeeves-mysql -p 3306:3306 -d mysql:8.0

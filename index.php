@@ -51,6 +51,12 @@ $router->map(
     '/bookings/{userId}',
     'App\Application\Booking\BookingController::getAll'
 );
+
+$router->map(
+    'GET',
+    '/bookings/details/{bookingId}',
+    'App\Application\Booking\BookingController::getById'
+);
 //EVENTS
 $router->map(
     'POST',

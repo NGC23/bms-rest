@@ -14,6 +14,7 @@ class Booking
         private DateTimeImmutable $startAt,
         private DateTimeImmutable $endAt,
         private ?BookerDetails $bookerDetails,
+        private ?string $eventName = null,
         private ?int $id = null,
     ) {
     }
@@ -60,6 +61,11 @@ class Booking
         return $this->bookerDetails;
     }
 
+    public function getEventName(): ?string
+    {
+        return $this->eventName;
+    }
+
     public function withId(int $id): self
     {
         $booking = clone $this;
@@ -76,11 +82,20 @@ class Booking
         return $booking;
     }
 
+    public function withEventName(string $name): self
+    {
+        $booking = clone $this;
+        $booking->eventName = $name;
+
+        return $booking;
+    }
+
     public function toArray(): array
     {
         return [
             'id' => $this->getId() ?? null,
             'eventId' => $this->getEventId(),
+            'eventName' => $this->getEventName() ?? '',
             'startTime' => $this->getStartTime()->format('Y-m-d H:s:i'),
             'endTime' =>  $this->getEndTime()->format('Y-m-d H:s:i'),
             'userId' => $this->getUserId(),

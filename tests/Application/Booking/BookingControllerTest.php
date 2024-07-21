@@ -12,6 +12,7 @@ use Psr\Http\Message\RequestInterface;
 use App\Domain\Booking\Interfaces\IBookingRepository;
 use App\Domain\Booking\Model\BookerDetails;
 use App\Domain\Booking\Model\Booking;
+use App\Domain\Events\Interfaces\IEventRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ServerRequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -25,12 +26,14 @@ class BookingControllerTest extends TestCase
     protected RequestInterface|MockObject $request;
     protected IBookingRepository|MockObject $repository;
     protected IBookingDetailsRepository|MockObject $bookingDeailsrepository;
+    protected IEventRepository|MockObject $eventRepository;
 
     public function setUp(): void
     {
         $this->request = $this->getMockBuilder(ServerRequestInterface::class)->disableOriginalConstructor()->getMock();
         $this->repository = $this->getMockBuilder(IBookingRepository::class)->disableOriginalConstructor()->getMock();
         $this->bookingDeailsrepository = $this->getMockBuilder(IBookingDetailsRepository::class)->disableOriginalConstructor()->getMock();
+        $this->eventRepository = $this->getMockBuilder(IEventRepository::class)->disableOriginalConstructor()->getMock();
     }
 
     public function testCreateBooking(): void
@@ -58,7 +61,8 @@ class BookingControllerTest extends TestCase
 
         $bookingController = new BookingController(
             $this->repository,
-            $this->bookingDeailsrepository
+            $this->bookingDeailsrepository,
+            $this->eventRepository
         );
         $result = $bookingController->create($this->request);
 
@@ -73,7 +77,8 @@ class BookingControllerTest extends TestCase
 
         $bookingController = new BookingController(
             $this->repository,
-            $this->bookingDeailsrepository
+            $this->bookingDeailsrepository,
+            $this->eventRepository
         );
         $result = $bookingController->create($this->request);
 

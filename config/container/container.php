@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+error_reporting(E_ALL);
+
 use Dotenv\Dotenv;
 use League\Container\Container;
 
@@ -12,7 +14,8 @@ $container = new Container();
 
 $container->add(\App\Application\Booking\BookingController::class)
     ->addArgument(App\Domain\Booking\Interfaces\IBookingRepository::class)
-    ->addArgument(App\Domain\Booking\Interfaces\IBookingDetailsRepository::class);
+    ->addArgument(App\Domain\Booking\Interfaces\IBookingDetailsRepository::class)
+    ->addArgument(App\Domain\Events\Interfaces\IEventRepository::class);
 
 $container->add(App\Application\Events\EventController::class)
     ->addArgument(App\Domain\Events\Interfaces\IEventRepository::class);
@@ -54,9 +57,11 @@ $container->add(
     App\Domain\General\Factory\PDOConnectionFactory::class
 )->addArgument(
         new App\Domain\General\Models\Connection(
-            "mysql:host=jeeves-mysql;port=3306;dbname=jeeves",
-            "root",
-            "gymmer4Life2024#"
+            $_ENV['MYSQL_HOST'],
+            $_ENV['MYSQL_PORT'],
+            $_ENV['MYSQL_DATABASE'],
+            $_ENV['MYSQL_USER'],
+            $_ENV['MYSQL_ROOT_PASSWORD']
         )
     );
 

@@ -19,16 +19,10 @@ interface IBookingRepository
     /**
      * get booking by id
      *
-     * @param integer $userId
-     * @param integer $eventId
      * @param integer $id
      * @return Booking
      */
-    public function getById(
-        int $userId,
-        int $eventId,
-        int $id
-    ): Booking;
+    public function getById(int $id): Booking;
 
     /**
      * get Booking by id
