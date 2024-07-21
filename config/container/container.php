@@ -60,11 +60,11 @@ $container->add(
     App\Domain\General\Factory\PDOConnectionFactory::class
 )->addArgument(
         new App\Domain\General\Models\Connection(
-            $_ENV['MYSQL_HOST'],
-            $_ENV['MYSQL_PORT'],
-            $_ENV['MYSQL_DATABASE'],
-            $_ENV['MYSQL_USER'],
-            $_ENV['MYSQL_ROOT_PASSWORD']
+            getenv('MYSQL_HOST'),
+            getenv('MYSQL_PORT'),
+            getenv('MYSQL_DATABASE'),
+            getenv('MYSQL_USER'),
+            getenv('MYSQL_ROOT_PASSWORD')
         )
     );
 
