@@ -54,6 +54,12 @@ $router->map(
 
 $router->map(
     'GET',
+    '/bookings/booker/{bookerId}',
+    'App\Application\Booking\BookingController::getAllbyBookerId'
+);
+
+$router->map(
+    'GET',
     '/bookings/details/{bookingId}',
     'App\Application\Booking\BookingController::getById'
 );

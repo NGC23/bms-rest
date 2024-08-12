@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Events\Models;
 
 use DateTimeImmutable;
+use App\Domain\Events\Models\EventDetails;
 
 class Event
 {
@@ -13,7 +14,8 @@ class Event
         private string $description,
         private int $userId,
         private DateTimeImmutable $createdAt,
-        private ?int $id = null
+        private ?int $id = null,
+        private ?EventDetails $eventDetails = null
     ) {
     }
 
@@ -48,6 +50,11 @@ class Event
     {
         return $this->userId;
     }
+
+    public function getEventDetails(): ?EventDetails
+    {
+        return $this->eventDetails;
+    }
     /**
      * Get the value of createdAt
      */
@@ -64,6 +71,14 @@ class Event
         return $event;
     }
 
+    public function withEventDetails(EventDetails $eventDetails): self
+    {
+        $event = clone $this;
+        $event->eventDetails = $eventDetails;
+
+        return $event;
+    }
+
     public function toArray(): array
     {
         return [
@@ -72,6 +87,7 @@ class Event
             'description' => $this->getDescription(),
             'createdAt' => $this->getCreatedAt()->format('Y-m-d H:s:i'),
             'userId' => $this->getUserId(),
+            'eventDetails' => $this->getEventDetails()->toArray(),
         ];
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\Events;
 
+use App\Domain\Events\Interfaces\IEventDetailsRepository;
+use App\Domain\Events\Models\EventDetails;
 use Exception;
 use DateTimeImmutable;
 use OpenApi\Attributes as OA;
@@ -12,11 +14,14 @@ use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Domain\Events\Interfaces\IEventRepository;
+use Throwable;
 
 class EventController
 {
-    public function __construct(private IEventRepository $eventRepository)
-    {
+    public function __construct(
+        private IEventRepository $eventRepository,
+        private IEventDetailsRepository $eventDetailsRepository
+    ) {
     }
 
     #[OA\Get(path: '/events', tags: ["Events"])]
@@ -56,7 +61,7 @@ class EventController
         } catch (Exception $e) {
             return new JsonResponse(
                 [
-                    'message' => 'something went wrong with retrieval of the event, contact support if this persists'
+                    'message' => 'something went wrong with retrieval of the event, contact support if this persists' . $e->getMessage()
                 ],
                 500
             );
@@ -81,13 +86,36 @@ class EventController
                     $body->name,
                     $body->description,
                     (int) $body->user_id,
-                    new DateTimeImmutable()
+                    new DateTimeImmutable(),
+                    null,
+                    new EventDetails(
+                        $body->location,
+                        new DateTimeImmutable(),
+                        (bool) $body->prePayment,
+                        (float) $body->price,
+                        (int) $body->slots,
+                    )
                 )
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return new JsonResponse(
                 [
-                    'message' => 'something went wrong with creation of the event, contact support if this persists'
+                    'message' => 'something went wrong with creation of the event, contact support if this persists' . $e->getMessage()
+                ],
+                500
+            );
+        }
+
+        $eventDetails = $event->getEventDetails();
+        $eventDetails = $eventDetails->withEventId($event->getId());
+        $event = $event->withEventDetails($eventDetails);
+
+        try {
+            $this->eventDetailsRepository->create($eventDetails);
+        } catch (Throwable $e) {
+            return new JsonResponse(
+                [
+                    'message' => 'something went wrong with creation of the event details, contact support if this persists' . $e->getMessage()
                 ],
                 500
             );
@@ -113,10 +141,18 @@ class EventController
                     $body->description,
                     (int) $body->user_id,
                     new DateTimeImmutable(),
+                    null,
+                    new EventDetails(
+                        $body->location,
+                        new DateTimeImmutable(),
+                        (bool) $body->prePayment,
+                        (float) $body->price,
+                        (int) $body->slots,
+                    ),
                     (int) $body->id
                 )
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return new JsonResponse(
                 [
                     'message' => 'something went wrong with updating of the event, contact support if this persists'

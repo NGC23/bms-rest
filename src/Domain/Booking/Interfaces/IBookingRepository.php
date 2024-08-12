@@ -63,4 +63,12 @@ interface IBookingRepository
         int $userId,
         int $bookingId
     ): bool;
+
+    /**
+     * get all bookings by bookerID
+     *
+     * @param integer $userId
+     * @return Booking[]
+     */
+    public function getAllByBookerId(int $userId): array;
 }

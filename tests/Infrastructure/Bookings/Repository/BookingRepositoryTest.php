@@ -76,6 +76,7 @@ class BookingRepositoryTest extends TestCase
             new DateTimeImmutable(),
             new DateTimeImmutable(),
             null,
+            null,
             1
         );
 
@@ -93,6 +94,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             null,
             1
         );
@@ -121,6 +123,7 @@ class BookingRepositoryTest extends TestCase
             new DateTimeImmutable(),
             new DateTimeImmutable(),
             null,
+            null,
             1
         );
 
@@ -141,6 +144,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             null,
             1
         );
@@ -168,6 +172,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             null
         );
 
@@ -185,6 +190,7 @@ class BookingRepositoryTest extends TestCase
             1,
             new DateTimeImmutable(),
             new DateTimeImmutable(),
+            null,
             null
         );
 

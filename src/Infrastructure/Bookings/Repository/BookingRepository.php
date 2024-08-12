@@ -19,7 +19,7 @@ class BookingRepository implements IBookingRepository
     {
     }
 
-        /**
+    /**
      * @inheritDoc
      */
     public function getAll(int $userId): array
@@ -34,6 +34,7 @@ class BookingRepository implements IBookingRepository
                     bookings.end_at,
                     events.name AS event_name,
                     booking_details.id AS details_id,
+                    booking_details.booker_id AS booker_id,
                     booking_details.first_name,
                     booking_details.last_name,
                     booking_details.email,
@@ -70,12 +71,14 @@ class BookingRepository implements IBookingRepository
                 (int) $booking['user_id'],
                 (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
                 (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
+                null,
                 new BookerDetails(
                     $booking['first_name'],
                     $booking['last_name'],
                     $booking['cell_number'],
                     $booking['email'],
                     (new DateTimeImmutable())->setTimestamp((int) $booking['created_at']),
+                    (int) $booking['booker_id'],
                     (int) $booking['id'],
                     (int) $booking['details_id'],
                 ),
@@ -102,6 +105,7 @@ class BookingRepository implements IBookingRepository
                     bookings.end_at,
                     events.name AS event_name,
                     booking_details.id AS details_id,
+                    booking_details.booker_id AS booker_id,
                     booking_details.first_name,
                     booking_details.last_name,
                     booking_details.email,
@@ -144,6 +148,7 @@ class BookingRepository implements IBookingRepository
                 (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
                 (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
                 null,
+                null,
                 $booking['event_name'],
                 (int) $booking['id']
             );
@@ -164,6 +169,7 @@ class BookingRepository implements IBookingRepository
                     bookings.end_at,
                     events.name AS event_name,
                     booking_details.id AS details_id,
+                    booking_details.booker_id AS booker_id,
                     booking_details.first_name,
                     booking_details.last_name,
                     booking_details.email,
@@ -202,12 +208,14 @@ class BookingRepository implements IBookingRepository
             (int) $booking['user_id'],
             (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
             (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
+            null,
             new BookerDetails(
                 $booking['first_name'],
                 $booking['last_name'],
                 $booking['cell_number'],
                 $booking['email'],
                 (new DateTimeImmutable())->setTimestamp((int) $booking['created_at']),
+                (int) $booking['booker_id'],
                 (int) $booking['id'],
                 (int) $booking['details_id'],
             ),
@@ -309,5 +317,74 @@ class BookingRepository implements IBookingRepository
         }
         //@todo return instance of event.
         return $booking;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllByBookerId(int $userId): array
+    {
+        try {
+            $pstmt = ($this->connection->create())->prepare(
+                'SELECT 
+                    bookings.id, 
+                    bookings.event_id,
+                    bookings.user_id,
+                    bookings.start_at,
+                    bookings.end_at,
+                    events.name AS event_name,
+                    booking_details.id AS details_id,
+                    booking_details.booker_id AS booker_id,
+                    booking_details.first_name,
+                    booking_details.last_name,
+                    booking_details.email,
+                    booking_details.cell_number,
+                    booking_details.created_at
+                FROM 
+                    `bookings`
+                LEFT JOIN 
+                    `booking_details`
+                ON
+                    booking_details.booking_id = bookings.id
+                LEFT JOIN
+                    events
+                ON
+                    events.id = bookings.event_id 
+                WHERE 
+                    booking_details.booker_id = :userId'
+            );
+            $pstmt->execute(
+                [
+                    ':userId' => $userId
+                ]
+            );
+            $bookings = $pstmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw $e;
+            //log and throw domain exception that we are not coupled to the PDO exceptions.
+            //Catch in presentation layer and return approapriate status
+        }
+
+        return array_map(function (array $booking) {
+            return new Booking(
+                (int) $booking['event_id'],
+                (int) $booking['user_id'],
+                (new DateTimeImmutable())->setTimestamp((int) $booking['start_at']),
+                (new DateTimeImmutable())->setTimestamp((int) $booking['end_at']),
+                null,
+                new BookerDetails(
+                    $booking['first_name'],
+                    $booking['last_name'],
+                    $booking['cell_number'],
+                    $booking['email'],
+                    (new DateTimeImmutable())->setTimestamp((int) $booking['created_at']),
+                    (int) $booking['booker_id'],
+                    (int) $booking['id'],
+                    (int) $booking['details_id'],
+                ),
+                $booking['event_name'],
+                (int) $booking['id']
+            );
+        }, $bookings);
     }
 }

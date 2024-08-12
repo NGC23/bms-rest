@@ -1,0 +1,1 @@
+ALTER TABLE booking_details ADD COLUMN booker_id INT;

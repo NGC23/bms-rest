@@ -6,6 +6,7 @@ namespace App\Infrastructure\Events\Repository;
 
 use App\Domain\Events\Interfaces\IEventRepository;
 use App\Domain\Events\Models\Event;
+use App\Domain\Events\Models\EventDetails;
 use App\Domain\General\Interfaces\IConnectionFactory;
 use DateTimeImmutable;
 use PDO;
@@ -25,13 +26,24 @@ class EventRepository implements IEventRepository
         try {
             $pstmt = ($this->connection->create())->prepare(
                 'SELECT 
-                    id, 
-                    name, 
-                    description, 
-                    created_at,
-                    user_id 
-                FROM `events` 
-                WHERE user_id=:userId'
+                    events.id, 
+                    event_details.id AS details_id, 
+                    events.name, 
+                    events.description,
+                    event_details.loaction AS location,
+                    event_details.price,
+                    event_details.slots,
+                    event_details.pre_payment, 
+                    event_details.created_at,
+                    events.user_id 
+                FROM 
+                    `events`
+                LEFT JOIN 
+                    `event_details`
+                ON
+                    events.id = event_details.event_id
+                WHERE 
+                    user_id=:userId'
             );
             $pstmt->execute([':userId' => $userId]);
             $events = $pstmt->fetchAll(PDO::FETCH_ASSOC);
@@ -47,7 +59,16 @@ class EventRepository implements IEventRepository
                 $event['description'],
                 $event['user_id'],
                 (new DateTimeImmutable())->setTimestamp((int) $event['created_at']),
-                (int) $event['id']
+                (int) $event['id'],
+                new EventDetails(
+                    $event['location'],
+                    (new DateTimeImmutable())->setTimestamp((int) $event['created_at']),
+                    (bool) $event['pre_payment'],
+                    (float) $event['price'],
+                    (int) $event['slots'],
+                    (int) $event['id'],
+                    (int) $event['details_id'],
+                )
             );
         }, $events);
     }
@@ -57,14 +78,27 @@ class EventRepository implements IEventRepository
         try {
             $pstmt = ($this->connection->create())->prepare(
                 'SELECT 
-                    id, 
-                    name, 
-                    description, 
-                    created_at,
-                    user_id 
-                FROM `events` 
-                WHERE id=:id
-                AND user_id=:userId'
+                    events.id,
+                    event_details.id AS details_id,  
+                    events.name, 
+                    events.description, 
+                    events.created_at,
+                    event_details.loaction AS location,
+                    event_details.price,
+                    event_details.slots,
+                    event_details.pre_payment, 
+                    event_details.created_at,
+                    events.user_id 
+                FROM 
+                    `events`
+                LEFT JOIN 
+                    `event_details`
+                ON
+                    events.id = event_details.event_id 
+                WHERE 
+                    events.id=:id
+                AND 
+                    user_id=:userId'
             );
             $pstmt->execute(
                 [
@@ -72,7 +106,7 @@ class EventRepository implements IEventRepository
                     ':id' => $id,
                 ]
             );
-            $event = $pstmt->fetchAll(PDO::FETCH_ASSOC);
+            $event = $pstmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             //log and throw domain exception that we are not coupled to the PDO exceptions.
             //Catch in presentation layer and return approapriate status
@@ -80,11 +114,20 @@ class EventRepository implements IEventRepository
         }
 
         return new Event(
-            $event[0]['name'],
-            $event[0]['description'],
-            $event[0]['user_id'],
-            (new DateTimeImmutable())->setTimestamp((int) $event[0]['created_at']),
-            (int) $event[0]['id']
+            $event['name'],
+            $event['description'],
+            $event['user_id'],
+            (new DateTimeImmutable())->setTimestamp((int) $event['created_at']),
+            (int) $event['id'],
+            new EventDetails(
+                $event['location'],
+                (new DateTimeImmutable())->setTimestamp((int) $event['created_at']),
+                (bool) $event['pre_payment'],
+                (float) $event['price'],
+                (int) $event['slots'],
+                (int) $event['id'],
+                (int) $event['details_id'],
+            )
         );
     }
 

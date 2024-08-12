@@ -32,13 +32,14 @@ class UserRegistrationController
                     $body->email,
                     password_hash($body->password, PASSWORD_DEFAULT),
                     new DateTimeImmutable(),
+                    $body->type
                 )
             );
         } catch (Throwable $e) {
             //loggers!!!!
             return new JsonResponse(
                 [
-                    'message' => 'Cannot create user at this time!'
+                    'message' => $e->getMessage()
                 ],
                 500
             );

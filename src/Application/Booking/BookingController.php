@@ -12,6 +12,7 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Domain\Booking\Interfaces\IBookingRepository;
 use App\Domain\Booking\Model\BookerDetails;
+use App\Domain\Booking\Model\BookingDetails;
 use App\Domain\Events\Interfaces\IEventRepository;
 use DateTimeImmutable;
 use Throwable;
@@ -61,6 +62,27 @@ class BookingController
         return new JsonResponse($bookings);
     }
 
+    public function getAllByBookerId(ServerRequestInterface $request): ResponseInterface
+    {
+        $bookerId = (int) $request->getAttribute('bookerId');
+
+        try {
+            $bookings = $this->iBookingRepository->getAllByBookerId($bookerId);
+        } catch (Throwable $exception) {
+            return new JsonResponse(
+                [$exception->getMessage()], // need to think of how to construct global json, can be enforced in response factory...
+                500
+            );
+        }
+
+        $bookings = array_map(function (Booking $booking) {
+            return $booking->toArray();
+        }, $bookings);
+
+        return new JsonResponse($bookings);
+    }
+
+
     public function getAllForEventId(ServerRequestInterface $request): ResponseInterface
     {
         return new JsonResponse([]);
@@ -76,12 +98,16 @@ class BookingController
                 (int) $body->userId,
                 new DateTimeImmutable($body->startTime),
                 new DateTimeImmutable($body->endTime),
+                new BookingDetails(
+                    BookingDetails::BOOKING_STATUS_BOOKED
+                ),
                 new BookerDetails(
                     $body->bookerDetails->firstName,
                     $body->bookerDetails->lastName,
                     $body->bookerDetails->cellNumber,
                     $body->bookerDetails->email,
-                    new DateTimeImmutable()
+                    new DateTimeImmutable(),
+                    (int) $body->bookerDetails->bookerId,
                 )
             );
 

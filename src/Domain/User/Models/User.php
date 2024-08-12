@@ -8,10 +8,14 @@ use DateTimeImmutable;
 
 class User
 {
+    public const USER_TYPE_BOOKER = 'booker';
+    public const USER_TYPE_USER = 'user';
+
     public function __construct(
         private string $email,
         private string $password,
         private DateTimeImmutable $createdAt,
+        private string $type = self::USER_TYPE_USER,
         private ?int $id = null
     ) {
     }
@@ -40,6 +44,11 @@ class User
         return $this->id;
     }
 
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
     /**
      * Get the value of createdAt
      */
@@ -61,6 +70,7 @@ class User
         return [
             'id' => $this->getId() ?? null,
             'email' => $this->getEmail(),
+            'type' => $this->getType(),
             'createdAt' => $this->getCreatedAt()->format('Y-m-d H:s:i')
         ];
     }

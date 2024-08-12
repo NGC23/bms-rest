@@ -29,7 +29,8 @@ class UserRepository implements IUserRepository
                         NULL,
                         :email, 
                         :password, 
-                        :createdAt
+                        :createdAt,
+                        :type
                     )
                 '
             );
@@ -37,6 +38,7 @@ class UserRepository implements IUserRepository
             $pstmt->execute(
                 [
                     ':email' => $user->getEmail(),
+                    ':type' => $user->getType(),
                     ':password' => $user->getPassword(),
                     ':createdAt' => $user->getCreatedAt()->getTimestamp(),
                 ]

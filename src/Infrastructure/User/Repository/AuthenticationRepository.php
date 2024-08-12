@@ -31,6 +31,7 @@ class AuthenticationRepository implements IAuthenticationRepository
                 'SELECT 
                     id,
                     email,
+                    type,
                     password,
                     created_at
                 FROM
@@ -52,15 +53,20 @@ class AuthenticationRepository implements IAuthenticationRepository
             throw $e;
         }
 
+        if ($result === false) {
+            throw new IncorrectPasswordException("User not found with email: {$user->getEmail()}");
+        }
+
         if (!password_verify($user->getPassword(), $result['password'])) {
-            throw new IncorrectPasswordException("Incorrect password supplied with email: {$user->getEmail()}");
+            throw new IncorrectPasswordException("Incorrect password and email combination supplied");
         }
 
         return new User(
             $result['email'],
             $result['password'],
             (new DateTimeImmutable())->setTimestamp((int) $result['created_at']),
-            (int) $result['id'],
+            $result['type'],
+            (int) $result['id']
         );
     }
 }

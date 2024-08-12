@@ -43,6 +43,7 @@ class BookingControllerTest extends TestCase
             1,
             new DateTimeImmutable("2024-08-11 12:45"),
             new DateTimeImmutable("2024-08-11 13:45"),
+            null,
             new BookerDetails(
                 'test',
                 'test-surname',

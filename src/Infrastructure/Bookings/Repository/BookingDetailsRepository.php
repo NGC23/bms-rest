@@ -31,7 +31,8 @@ class BookingDetailsRepository implements IBookingDetailsRepository
                         :email,
                         :cell_number,
                         :booking_id,
-                        :created_at
+                        :created_at,
+                        :booker_id
                     )
                 '
             );
@@ -44,6 +45,7 @@ class BookingDetailsRepository implements IBookingDetailsRepository
                     ':cell_number' => $bookerDetails->getcellNumber(),
                     ':booking_id' => $bookerDetails->getBookingId(),
                     ':created_at' => $bookerDetails->getCreatedAt()->getTimestamp(),
+                    ':booker_id' => $bookerDetails->getBookerId(),
                 ]
             );
         } catch (PDOException $e) {

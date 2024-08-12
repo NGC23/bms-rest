@@ -14,6 +14,7 @@ class BookerDetails
         private string $cellNumber,
         private string $email,
         private DateTimeImmutable $createdAt,
+        private int $bookerId,
         private ?int $bookingId = null,
         private ?int $id = null
     ) {
@@ -50,6 +51,11 @@ class BookerDetails
         return $this->id;
     }
 
+    public function getBookerId(): int
+    {
+        return $this->bookerId;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -79,6 +85,7 @@ class BookerDetails
             'email' => $this->email,
             'createdAt' => $this->createdAt->format('Y-m-d H:s:i'),
             'bookingId' => $this->bookingId,
+            'bookerId' => $this->bookerId,
         ];
     }
 }

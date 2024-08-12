@@ -13,9 +13,12 @@ build:
 	@docker build -t bms-rest .
 	@echo [8]completed.
 
+
+#  -e MYSQL_HOST=localhost -e MYSQL_PORT=3306 -e MYSQL_USER=root -e MYSQL_DATABASE=jeeves -e XDEBUG_MODE=coverage
+
+
 run:
 	@echo "Rest api starting.."
-	@docker run  --network jeeves -p 8080:80 -d -v .:/var/www/html --name bms-rest bms-rest --build-arg MYSQL_ROOT_PASSWORD=gymmer4Life2024# --build-arg MYSQL_HOST=localhost --build-arg MYSQL_PORT=3306 --build-arg MYSQL_USER=root --build-arg MYSQL_DATABASE=jeeves --build-arg XDEBUG_MODE=coverage
-	@echo "Rest api running on port 8080..."
+	@docker run --network jeeves -v .:/var/www/html -p 8080:80 --name bms-rest -d bms-rest
 	@echo Starting mysql
-	@docker run  --network jeeves --name jeeves-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=gymmer4Life2024# -e XDEBUG_MODE=coverage -d mysql:8.0
+	@docker run --network jeeves --name jeeves-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=gymmer4Life2024# -e XDEBUG_MODE=coverage -d mysql:8.0

@@ -13,6 +13,7 @@ class Booking
         private int $userId,
         private DateTimeImmutable $startAt,
         private DateTimeImmutable $endAt,
+        private ?BookingDetails $bookingDetails,
         private ?BookerDetails $bookerDetails,
         private ?string $eventName = null,
         private ?int $id = null,
