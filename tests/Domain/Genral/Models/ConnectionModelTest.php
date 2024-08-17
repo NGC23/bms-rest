@@ -14,16 +14,20 @@ class ConnectionModelTest extends TestCase
     public function testConnectionModel(): void
     {
         $username = "username";
-        $dsn = "test-dsn";
+        $host = "test-dsn";
+        $port = "3306";
+        $database = "test";
         $password = "password";
 
         $connection = new Connection(
-            $dsn, 
+            $host, 
+            $port, 
+            $database, 
             $username, 
             $password
         );
 
-        $this->assertEquals($dsn, $connection->getDsn());
+        $this->assertEquals("mysql:host=$host;port=$port;dbname=$database", $connection->getDsn());
         $this->assertEquals($password, $connection->getPassword());
         $this->assertEquals($username, $connection->getUsername());
     }

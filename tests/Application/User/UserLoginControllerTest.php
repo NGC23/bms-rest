@@ -62,6 +62,7 @@ class UserLoginControllerTest extends TestCase
                 'test-email@test.com',
                 'blaaaah',
                 new DateTimeImmutable(),
+                User::USER_TYPE_USER,
                 1
             )
         );

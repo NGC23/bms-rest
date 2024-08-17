@@ -12,6 +12,7 @@ use Psr\Http\Message\RequestInterface;
 use App\Domain\Booking\Interfaces\IBookingRepository;
 use App\Domain\Booking\Model\BookerDetails;
 use App\Domain\Booking\Model\Booking;
+use App\Domain\Booking\Model\BookingDetails;
 use App\Domain\Events\Interfaces\IEventRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PDOException;
 
 #[CoversClass(BookingController::class)]
+#[CoversClass(BookingDetails::class)]
 #[CoversClass(Booking::class)]
 #[CoversClass(BookerDetails::class)]
 class BookingControllerTest extends TestCase
@@ -49,12 +51,14 @@ class BookingControllerTest extends TestCase
                 'test-surname',
                 '0614430444',
                 'test@gmail.com',
-                new DateTimeImmutable()
+                new DateTimeImmutable(),
+                1
             ),
+            "test-event",
             1
         );
 
-        $this->request->method('getBody')->willReturn('{"eventId":1,"userId":1,"startTime":"2024-08-11 12:45","endTime": "2024-08-11 13:45","bookerDetails": {"firstName": "test","lastName": "test-surname","cellNumber":"0614430444","email":"test@gmail.com"}}');
+        $this->request->method('getBody')->willReturn('{"eventId":1,"userId":1,"startTime":"2024-08-11 12:45","endTime": "2024-08-11 13:45","bookerDetails": {"firstName": "test","lastName": "test-surname","cellNumber":"0614430444","email":"test@gmail.com", "bookerId":1}}');
 
         $this->repository->method('create')->willReturn($booking);
 

@@ -2,7 +2,7 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Code Coverage for /var/www/html/src/Domain/User/Exceptions/IncorrectPasswordException.php</title>
+  <title>Code Coverage for /var/www/html/src/Domain/Booking/Interfaces/IBookingDetailsRepository.php</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../../../_css/bootstrap.min.css?v=11.0.3" rel="stylesheet" type="text/css">
   <link href="../../../_css/octicons.css?v=11.0.3" rel="stylesheet" type="text/css">
@@ -18,9 +18,9 @@
        <ol class="breadcrumb">
          <li class="breadcrumb-item"><a href="../../../index.html">/var/www/html/src</a></li>
          <li class="breadcrumb-item"><a href="../../index.html">Domain</a></li>
-         <li class="breadcrumb-item"><a href="../index.html">User</a></li>
-         <li class="breadcrumb-item"><a href="index.html">Exceptions</a></li>
-         <li class="breadcrumb-item active">IncorrectPasswordException.php</li>
+         <li class="breadcrumb-item"><a href="../index.html">Booking</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Interfaces</a></li>
+         <li class="breadcrumb-item active">IBookingDetailsRepository.php</li>
 
        </ol>
       </nav>
@@ -58,20 +58,6 @@
        <td class=" small"><div align="right">0&nbsp;/&nbsp;0</div></td>
       </tr>
 
-      <tr>
-       <td class=""><abbr title="App\Domain\User\Exceptions\IncorrectPasswordException">IncorrectPasswordException</abbr></td>
-       <td class=" big"></td>
-       <td class=" small"><div align="right">n/a</div></td>
-       <td class=" small"><div align="right">0&nbsp;/&nbsp;0</div></td>
-       <td class=" big"></td>
-       <td class=" small"><div align="right">n/a</div></td>
-       <td class=" small"><div align="right">0&nbsp;/&nbsp;0</div></td>
-       <td class=" small">0</td>
-       <td class=" big"></td>
-       <td class=" small"><div align="right">n/a</div></td>
-       <td class=" small"><div align="right">0&nbsp;/&nbsp;0</div></td>
-      </tr>
-
 
      </tbody>
     </table>
@@ -82,12 +68,20 @@
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="2" href="#2">2</a></td><td class="col-11 codeLine"></td></tr>
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="3" href="#3">3</a></td><td class="col-11 codeLine"><span class="keyword">declare</span><span class="keyword">(</span><span class="default">strict_types</span><span class="keyword">=</span><span class="default">1</span><span class="keyword">)</span><span class="keyword">;</span></td></tr>
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="4" href="#4">4</a></td><td class="col-11 codeLine"></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="5" href="#5">5</a></td><td class="col-11 codeLine"><span class="keyword">namespace</span><span class="default">&nbsp;</span><span class="default">App\Domain\User\Exceptions</span><span class="keyword">;</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="5" href="#5">5</a></td><td class="col-11 codeLine"><span class="keyword">namespace</span><span class="default">&nbsp;</span><span class="default">App\Domain\Booking\Interfaces</span><span class="keyword">;</span></td></tr>
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="6" href="#6">6</a></td><td class="col-11 codeLine"></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="7" href="#7">7</a></td><td class="col-11 codeLine"><span class="keyword">use</span><span class="default">&nbsp;</span><span class="default">Exception</span><span class="keyword">;</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="7" href="#7">7</a></td><td class="col-11 codeLine"><span class="keyword">use</span><span class="default">&nbsp;</span><span class="default">App\Domain\Booking\Model\BookerDetails</span><span class="keyword">;</span></td></tr>
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="8" href="#8">8</a></td><td class="col-11 codeLine"></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="9" href="#9">9</a></td><td class="col-11 codeLine"><span class="keyword">class</span><span class="default">&nbsp;</span><span class="default">IncorrectPasswordException</span><span class="default">&nbsp;</span><span class="keyword">extends</span><span class="default">&nbsp;</span><span class="default">Exception</span></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="10" href="#10">10</a></td><td class="col-11 codeLine"><span class="keyword">{</span><span class="default">&nbsp;</span><span class="keyword">}</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="9" href="#9">9</a></td><td class="col-11 codeLine"><span class="keyword">interface</span><span class="default">&nbsp;</span><span class="default">IBookingDetailsRepository</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="10" href="#10">10</a></td><td class="col-11 codeLine"><span class="keyword">{</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="11" href="#11">11</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">/**</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="12" href="#12">12</a></td><td class="col-11 codeLine"><span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Undocumented&nbsp;function</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="13" href="#13">13</a></td><td class="col-11 codeLine"><span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="14" href="#14">14</a></td><td class="col-11 codeLine"><span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;BookerDetails&nbsp;$bookerDetails</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="15" href="#15">15</a></td><td class="col-11 codeLine"><span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;BookerDetails</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="16" href="#16">16</a></td><td class="col-11 codeLine"><span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="17" href="#17">17</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">public</span><span class="default">&nbsp;</span><span class="keyword">function</span><span class="default">&nbsp;</span><span class="default">create</span><span class="keyword">(</span><span class="default">BookerDetails</span><span class="default">&nbsp;</span><span class="default">$bookerDetails</span><span class="keyword">)</span><span class="keyword">:</span><span class="default">&nbsp;</span><span class="default">BookerDetails</span><span class="keyword">;</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="18" href="#18">18</a></td><td class="col-11 codeLine"><span class="keyword">}</span></td></tr>
 
 </tbody>
 </table>

@@ -10,12 +10,14 @@ use PDOStatement;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Events\Models\Event;
+use App\Domain\Events\Models\EventDetails;
 use App\Domain\General\Factory\PDOConnectionFactory;
 use App\Domain\General\Models\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\General\Interfaces\IConnectionFactory;
 use App\Infrastructure\Events\Repository\EventRepository;
 
+#[CoversClass(EventDetails::class)]
 #[CoversClass(Event::class)]
 #[CoversClass(PDOConnectionFactory::class)]
 #[CoversClass(Connection::class)]
@@ -51,21 +53,33 @@ class EventRepositoryTest extends TestCase
                 'description' => 'test-description-1',
                 'user_id' => 1,
                 'created_at' => '1712340841',
-                'id' => 1
+                'id' => 1,
+                "location" => "test",
+                "pre_payment" => "false",
+                "price" => "12",
+                "slots" => "0",
             ],
             [
                 'name' => 'test-event-2',
                 'description' => 'test-description-2',
                 'user_id' => 1,
                 'created_at' => '1712340841',
-                'id' => 2
+                'id' => 2,
+                "location" => "test",
+                "pre_payment" => "false",
+                "price" => "12",
+                "slots" => "0",
             ],
             [
                 'name' => 'test-event-3',
                 'description' => 'test-description-3',
                 'user_id' => 1,
                 'created_at' => '1712340841',
-                'id' => 3
+                'id' => 3,
+                "location" => "test",
+                "pre_payment" => "false",
+                "price" => "12",
+                "slots" => "0",
             ],
         ];
 
@@ -95,13 +109,17 @@ class EventRepositoryTest extends TestCase
             'description' => 'test-description-1',
             'user_id' => 1,
             'created_at' => '1712340841',
-            'id' => 1
+            'id' => 1,
+            "location" => "test",
+            "pre_payment" => "false",
+            "price" => "12",
+            "slots" => "0"
         ];
 
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $statementMock = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $statementMock->method('execute')->willReturn(true);
-        $statementMock->method('fetchAll')->willReturn([$event]);
+        $statementMock->method('fetch')->willReturn($event);
         $pdo->method('prepare')->willReturn($statementMock);
 
         $this->connection->method('create')->willReturn($pdo);
