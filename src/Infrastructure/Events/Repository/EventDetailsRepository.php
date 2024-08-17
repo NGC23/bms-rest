@@ -42,7 +42,7 @@ class EventDetailsRepository implements IEventDetailsRepository
                     ':loc' => $details->getLocation(),
                     ':slots' => $details->getSlots(),
                     ':price' => $details->getPrice(),
-                    ':pre_payment' => false,
+                    ':pre_payment' => (int) $details->getPrePayment(),
                     ':event_id' => $details->getEventId(),
                     ':created_at' => $details->getCreatedAt()->getTimestamp(),
                 ]

@@ -11,7 +11,7 @@ class EventDetails
     public function __construct(
         private string $location,
         private DateTimeImmutable $createdAt,
-        private bool $prePayment = false,
+        private bool $prePayment,
         private float $price = 0.00,
         private int $slots = 0,
         private ?int $eventId = null,

@@ -91,7 +91,7 @@ class EventController
                     new EventDetails(
                         $body->location,
                         new DateTimeImmutable(),
-                        (bool) $body->prePayment,
+                        filter_var($body->prePayment, FILTER_VALIDATE_BOOLEAN),
                         (float) $body->price,
                         (int) $body->slots,
                     )
@@ -145,7 +145,7 @@ class EventController
                     new EventDetails(
                         $body->location,
                         new DateTimeImmutable(),
-                        (bool) $body->prePayment,
+                        filter_var($body->prePayment, FILTER_VALIDATE_BOOLEAN),
                         (float) $body->price,
                         (int) $body->slots,
                     ),
